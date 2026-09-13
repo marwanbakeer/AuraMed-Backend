@@ -7,6 +7,10 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   # Job 1: Automated Testing and Subsystem Verification
   test-and-verify:
@@ -27,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: Execute Subsystem Integration Tests
-        run: node test-api.js
+        run: npm test
 
   # Job 2: Docker Build & Security Scan
   docker-build:
