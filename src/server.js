@@ -10,6 +10,7 @@ import growthRoutes from "./routes/growth.js";
 import insuranceRoutes from "./routes/insurance.js";
 import patientPortalRoutes from "./routes/patientPortal.js";
 import adminRoutes from "./routes/admin.js";
+import tenantRoutes from "./routes/tenants.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -57,6 +58,7 @@ app.use("/api/nursing", requireAuth, nursingRoutes);
 app.use("/api/growth", requireAuth, growthRoutes);
 app.use("/api/insurance", requireAuth, insuranceRoutes);
 app.use("/api/patient-portal", patientPortalRoutes);
+app.use("/api/tenants", tenantRoutes);
 app.use("/api/admin", requireAuth, adminRoutes);
 
 // Fallback 404 handler
@@ -78,12 +80,18 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`=======================================================`);
-  console.log(`  AURAMED ENTERPRISE OS - HIGH-THROUGHPUT CORE READY   `);
-  console.log(`  Listening on http://localhost:${PORT}                `);
-  console.log(`  Mode: Stateless High-Throughput Cluster              `);
-  console.log(`=======================================================`);
-});
+import { fileURLToPath } from "url";
+
+const isDirectRun = process.argv[1] && process.argv[1] === fileURLToPath(import.meta.url);
+
+if (isDirectRun) {
+  app.listen(PORT, () => {
+    console.log(`=======================================================`);
+    console.log(`  AURAMED ENTERPRISE OS - HIGH-THROUGHPUT CORE READY   `);
+    console.log(`  Listening on http://localhost:${PORT}                `);
+    console.log(`  Mode: Stateless High-Throughput Cluster              `);
+    console.log(`=======================================================`);
+  });
+}
 
 export default app;

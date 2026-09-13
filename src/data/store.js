@@ -2,6 +2,94 @@
 // Seeded with rich clinical, financial, supply chain, nursing, and insurance data
 
 export const store = {
+  // Multi-Tenant White-Label Organizations Registry
+  tenants: [
+    {
+      id: "tenant-auramed-main",
+      name: "AuraMed International Medical Center",
+      subdomain: "main",
+      slogan: "Autonomous Unified Healthcare Ecosystem",
+      badgeText: "AuraMed Standard",
+      currency: "USD",
+      specialties: ["Cardiology", "Orthopedics", "Dermatology", "Neurology"],
+      theme: {
+        primaryColor: "#06b6d4", // Electric Cyan
+        secondaryColor: "#10b981", // Emerald Green
+        accentColor: "#8b5cf6", // Violet
+        surfaceColor: "#0a0e17",
+        cardBg: "rgba(17, 24, 39, 0.75)",
+        glowColor: "rgba(6, 182, 212, 0.4)",
+        headerGradient: "from-[#0c1220] via-[#0d1829] to-[#0c1220]"
+      },
+      status: "Active",
+      doctorsCount: 4,
+      createdAt: "2026-01-10T08:00:00Z"
+    },
+    {
+      id: "tenant-st-jude-cardio",
+      name: "St. Jude Heart & Vascular Hospital",
+      subdomain: "st-jude",
+      slogan: "World-Class Cardiovascular Surgery & Interventional Research",
+      badgeText: "Cardiac Center of Excellence",
+      currency: "USD",
+      specialties: ["Cardiology", "Vascular Surgery", "Electrophysiology"],
+      theme: {
+        primaryColor: "#f43f5e", // Crimson Rose
+        secondaryColor: "#f59e0b", // Amber Gold
+        accentColor: "#ec4899", // Pink
+        surfaceColor: "#170a0e",
+        cardBg: "rgba(31, 15, 22, 0.75)",
+        glowColor: "rgba(244, 63, 94, 0.4)",
+        headerGradient: "from-[#1c0c12] via-[#241018] to-[#1c0c12]"
+      },
+      status: "Active",
+      doctorsCount: 6,
+      createdAt: "2026-03-15T10:30:00Z"
+    },
+    {
+      id: "tenant-elysium-derma",
+      name: "Elysium Aesthetic & Regenerative Clinic",
+      subdomain: "elysium",
+      slogan: "Pioneering Photomedicine, Laser Dermatology & Longevity",
+      badgeText: "Aesthetic Specialist",
+      currency: "EUR",
+      specialties: ["Dermatology", "Laser Aesthetics", "Phototherapy"],
+      theme: {
+        primaryColor: "#d946ef", // Fuchsia
+        secondaryColor: "#8b5cf6", // Violet
+        accentColor: "#06b6d4", // Cyan
+        surfaceColor: "#150920",
+        cardBg: "rgba(28, 14, 40, 0.75)",
+        glowColor: "rgba(217, 70, 239, 0.4)",
+        headerGradient: "from-[#180a24] via-[#230f35] to-[#180a24]"
+      },
+      status: "Active",
+      doctorsCount: 3,
+      createdAt: "2026-05-20T14:15:00Z"
+    },
+    {
+      id: "tenant-apex-ortho",
+      name: "Apex Sports Medicine & Surgical Pavilion",
+      subdomain: "apex",
+      slogan: "Advanced Arthroscopic Joint Reconstruction & Sports Rehab",
+      badgeText: "Sports Trauma Center",
+      currency: "USD",
+      specialties: ["Orthopedics", "Sports Medicine", "Physical Therapy"],
+      theme: {
+        primaryColor: "#3b82f6", // Cobalt Blue
+        secondaryColor: "#10b981", // Emerald Green
+        accentColor: "#f97316", // Orange
+        surfaceColor: "#0b1329",
+        cardBg: "rgba(15, 27, 48, 0.75)",
+        glowColor: "rgba(59, 130, 246, 0.4)",
+        headerGradient: "from-[#0c152a] via-[#111f3d] to-[#0c152a]"
+      },
+      status: "Active",
+      doctorsCount: 5,
+      createdAt: "2026-07-01T09:00:00Z"
+    }
+  ],
+
   // Platform configuration and tuning parameters
   adminConfig: {
     clinicName: "AuraMed International Medical Center",

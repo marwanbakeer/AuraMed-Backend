@@ -1,4 +1,5 @@
 // Automated verification script for AuraMed Enterprise backend endpoints
+process.env.NODE_ENV = "test";
 import http from "http";
 import app from "./src/server.js";
 
@@ -110,8 +111,28 @@ const server = app.listen(5099, async () => {
     const adminStatus = await request("/api/admin/system-status", { headers: authHeaders });
     console.log(`✓ Admin Mission Control: Avg Latency ${adminStatus.body.metrics.averageLatencyMs}ms, Sessions: ${adminStatus.body.metrics.activeSessions}`);
 
+    // 12. Multi-Tenant White-Label Architecture & Provisioning
+    const tenantsList = await request("/api/tenants");
+    console.log(`✓ Tenants registry loaded: ${tenantsList.body.tenants.length} hospital organizations active`);
+
+    const provisionTenant = await request("/api/tenants/provision", {
+      method: "POST",
+      headers: authHeaders,
+      body: {
+        name: "Cedars-Sinai Surgical Pavilion",
+        subdomain: "cedars-sinai",
+        slogan: "Excellence in Surgical Innovation & Trauma",
+        badgeText: "Level 1 Trauma Center",
+        primaryColor: "#0284c7",
+        secondaryColor: "#10b981",
+        accentColor: "#f59e0b",
+        specialties: ["Cardiology", "Trauma Surgery", "Orthopedics"]
+      }
+    });
+    console.log(`✓ Provisioned new hospital tenant: "${provisionTenant.body.tenant.name}" with primary skin: ${provisionTenant.body.tenant.theme.primaryColor}`);
+
     console.log("\n=================================================");
-    console.log("  ALL 11 CORE BACKEND MODULE TESTS PASSED 100%!  ");
+    console.log("  ALL 12 CORE BACKEND MODULE TESTS PASSED 100%!  ");
     console.log("=================================================");
   } catch (err) {
     console.error("Test error:", err);
