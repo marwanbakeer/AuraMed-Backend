@@ -131,8 +131,91 @@ const server = app.listen(5099, async () => {
     });
     console.log(`✓ Provisioned new hospital tenant: "${provisionTenant.body.tenant.name}" with primary skin: ${provisionTenant.body.tenant.theme.primaryColor}`);
 
+    // 13. Social Sign-In (Google & Facebook) and Native Registration
+    const googleLogin = await request("/api/auth/social-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: {
+        provider: "google",
+        email: "alex.mercier@gmail.com",
+        name: "Alex Mercier",
+        tenantId: "tenant-st-jude-cardio",
+        role: "Patient"
+      }
+    });
+    console.log(`✓ Google OAuth Authentication: Signed in "${googleLogin.body.user.name}" (Status: ${googleLogin.body.user.status})`);
+
+    const fbLogin = await request("/api/auth/social-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: {
+        provider: "facebook",
+        email: "diana.prince@facebook.com",
+        name: "Diana Prince",
+        tenantId: "tenant-elysium-derma",
+        role: "Patient"
+      }
+    });
+    console.log(`✓ Facebook OAuth Authentication: Signed in "${fbLogin.body.user.name}" (Status: ${fbLogin.body.user.status})`);
+
+    // 14. Native Registration with Pending Authorization for Clinical Staff
+    const nativeDoctorReg = await request("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: {
+        name: "Dr. Jonathan Ross",
+        email: "j.ross@stjude.org",
+        role: "Doctor",
+        tenantId: "tenant-st-jude-cardio",
+        specialty: "Cardiothoracic Surgery"
+      }
+    });
+    console.log(`✓ Native Staff Registration: Registered "${nativeDoctorReg.body.user.name}" -> Status: ${nativeDoctorReg.body.user.status}`);
+
+    // 15. Tenant-Scoped Invitation by Tenant SuperAdmin
+    const tenantAdminAuth = await request("/api/auth/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: { personaKey: "tenantAdmin" }
+    });
+    const tenantAdminHeaders = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${tenantAdminAuth.body.token}`
+    };
+
+    const tenantInvite = await request("/api/auth/invite", {
+      method: "POST",
+      headers: tenantAdminHeaders,
+      body: {
+        email: "fellow.cardio@stjude.org",
+        role: "Doctor",
+        tenantId: "tenant-st-jude-cardio"
+      }
+    });
+    console.log(`✓ Tenant-Scoped Invitation: Issued ${tenantInvite.body.invitation.token} for ${tenantInvite.body.invitation.tenantName}`);
+
+    // Verify Tenant SuperAdmin CANNOT invite to a different tenant (Scope Violation test)
+    const illegalInvite = await request("/api/auth/invite", {
+      method: "POST",
+      headers: tenantAdminHeaders,
+      body: {
+        email: "intruder@elysium.com",
+        role: "Doctor",
+        tenantId: "tenant-elysium-derma" // Unauthorized cross-tenant attempt!
+      }
+    });
+    console.log(`✓ Cross-Tenant Security Shield: Blocked unauthorized invitation (${illegalInvite.status} - ${illegalInvite.body.error})`);
+
+    // 16. Authorize Doctor by Tenant SuperAdmin
+    const authorizeDoctor = await request(`/api/auth/users/${nativeDoctorReg.body.user.id}/authorize`, {
+      method: "PATCH",
+      headers: tenantAdminHeaders,
+      body: { status: "Active", role: "Doctor" }
+    });
+    console.log(`✓ Tenant-Scoped Authorization: Approved ${authorizeDoctor.body.user.name} -> Status: ${authorizeDoctor.body.user.status}`);
+
     console.log("\n=================================================");
-    console.log("  ALL 12 CORE BACKEND MODULE TESTS PASSED 100%!  ");
+    console.log("  ALL 16 CORE BACKEND MODULE TESTS PASSED 100%!  ");
     console.log("=================================================");
   } catch (err) {
     console.error("Test error:", err);

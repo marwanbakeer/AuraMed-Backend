@@ -90,6 +90,100 @@ export const store = {
     }
   ],
 
+  // Platform Users (Google, Facebook, and Native Registration with Role Authorization)
+  users: [
+    {
+      id: "usr-root",
+      name: "System Root Administrator",
+      email: "root@auramed.os",
+      authProvider: "native",
+      role: "SuperAdmin",
+      tenantId: "all",
+      status: "Active",
+      createdAt: "2026-01-01T00:00:00Z"
+    },
+    {
+      id: "usr-doc-1",
+      name: "Dr. Elena Rostova",
+      email: "elena.rostova@auramed.os",
+      authProvider: "google",
+      role: "Doctor",
+      tenantId: "tenant-auramed-main",
+      status: "Active",
+      specialty: "Cardiology",
+      createdAt: "2026-02-01T00:00:00Z"
+    },
+    {
+      id: "usr-tenant-st-jude",
+      name: "Dr. Arthur Campbell",
+      email: "admin@stjude.org",
+      authProvider: "google",
+      role: "TenantSuperAdmin",
+      tenantId: "tenant-st-jude-cardio",
+      status: "Active",
+      createdAt: "2026-03-15T09:00:00Z"
+    },
+    {
+      id: "usr-tenant-elysium",
+      name: "Dr. Vivienne Chen",
+      email: "director@elysiumclinic.eu",
+      authProvider: "facebook",
+      role: "TenantSuperAdmin",
+      tenantId: "tenant-elysium-derma",
+      status: "Active",
+      createdAt: "2026-05-20T10:00:00Z"
+    },
+    {
+      id: "usr-pending-1",
+      name: "Dr. Samantha Reed",
+      email: "s.reed@example.com",
+      authProvider: "google",
+      role: "Doctor",
+      tenantId: "tenant-st-jude-cardio",
+      status: "Pending Authorization",
+      specialty: "Pediatric Interventional Cardiology",
+      createdAt: "2026-09-13T20:15:00Z"
+    },
+    {
+      id: "usr-pending-2",
+      name: "Lucas Dupont",
+      email: "lucas.dupont@paris.fr",
+      authProvider: "facebook",
+      role: "Patient",
+      tenantId: "tenant-elysium-derma",
+      status: "Active",
+      createdAt: "2026-09-13T21:00:00Z"
+    }
+  ],
+
+  // Scoped Invitations Engine (Issued by SuperAdmin or Tenant SuperAdmin for their tenant only)
+  invitations: [
+    {
+      id: "inv-901",
+      token: "INV-STJUDE-8821",
+      tenantId: "tenant-st-jude-cardio",
+      tenantName: "St. Jude Heart & Vascular Hospital",
+      role: "Doctor",
+      invitedEmail: "dr.reynolds@cardio.org",
+      invitedBy: "Dr. Arthur Campbell (Tenant SuperAdmin)",
+      status: "Pending",
+      createdAt: "2026-09-12T14:00:00Z",
+      expiresAt: "2026-09-26T14:00:00Z"
+    },
+    {
+      id: "inv-902",
+      token: "INV-AURAMED-4412",
+      tenantId: "tenant-auramed-main",
+      tenantName: "AuraMed International Medical Center",
+      role: "CFO",
+      invitedEmail: "auditor@deloitte-health.com",
+      invitedBy: "System Root Administrator",
+      status: "Pending",
+      createdAt: "2026-09-13T10:00:00Z",
+      expiresAt: "2026-09-27T10:00:00Z"
+    }
+  ],
+
   // Platform configuration and tuning parameters
   adminConfig: {
     clinicName: "AuraMed International Medical Center",
