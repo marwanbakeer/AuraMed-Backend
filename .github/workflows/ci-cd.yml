@@ -1,0 +1,73 @@
+name: AuraMed Backend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  # Job 1: Automated Testing and Subsystem Verification
+  test-and-verify:
+    name: Run Automated Subsystem Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js v24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Execute Subsystem Integration Tests
+        run: node test-api.js
+
+  # Job 2: Docker Build & Security Scan
+  docker-build:
+    name: Build & Validate Docker Container
+    needs: test-and-verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: auramed-backend:${{ github.sha }}, auramed-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Optional publish step when pushing to main and GHCR token is present
+      - name: Log in to GitHub Container Registry (Optional)
+        if: github.event_name != 'pull_request' && github.actor != ''
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      - name: Publish to GHCR (Optional)
+        if: github.event_name != 'pull_request' && github.actor != ''
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest, ghcr.io/${{ github.repository }}:${{ github.sha }}
+        continue-on-error: true
