@@ -73,9 +73,9 @@ app.use((req, res) => {
 // Centralized error handler
 app.use((err, req, res, next) => {
   console.error("[SERVER ERROR]", err);
-  res.status(500).json({
+  res.status(err.status || 500).json({
     success: false,
-    error: "Internal server error",
+    error: err.message || "Internal server error",
     details: err.message
   });
 });
